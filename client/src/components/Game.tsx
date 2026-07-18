@@ -128,15 +128,15 @@ function GuessControls({ view, actions }: PV) {
         {[-5, -1, +1, +5].map((n) => (
           <button
             key={n}
-            className="btn btn-ghost px-3"
+            className="btn btn-ghost h-11 w-11 rounded-full p-0 text-base font-bold"
             onClick={() => actions.commitPointer(clampDial(view.pointer + n))}
           >
             {n > 0 ? `+${n}` : n}
           </button>
         ))}
-        <span className="w-16 text-sm text-slate-400">{view.pointer}°</span>
+        <span className="w-14 font-mono text-sm font-bold text-amber-300">{view.pointer}°</span>
       </div>
-      <button className="btn btn-primary px-8 text-lg" onClick={actions.lockGuess}>
+      <button className="btn btn-primary px-10 py-3 text-lg" onClick={actions.lockGuess}>
         🔒 Lock in guess
       </button>
     </div>
@@ -366,8 +366,8 @@ export default function Game() {
       <div className="card-panel">
         {view.clue ? (
           <div className="mb-2 text-center">
-            <div className="text-2xl font-bold text-amber-300">&ldquo;{view.clue}&rdquo;</div>
-            <div className="text-xs text-slate-400">clue from {psychicName}</div>
+            <div className="clue-text">&ldquo;{view.clue}&rdquo;</div>
+            <div className="clue-sub mt-1">clue from {psychicName}</div>
           </div>
         ) : (
           view.phase === 'clue' && (
@@ -388,23 +388,19 @@ export default function Game() {
           onCommit={actions.commitPointer}
         />
 
-        <div className="mt-1 flex items-start justify-between gap-4 text-sm font-semibold">
+        <div className="mt-1 flex items-start justify-between gap-4">
           {view.card ? (
             <>
-              <span className="max-w-[45%] rounded-lg bg-sky-500/15 px-2 py-1 text-sky-300">
-                ⬅ {view.card.left}
-              </span>
+              <span className="spectrum-chip spectrum-left">⬅ {view.card.left}</span>
               {view.card.deck === 'custom' && (
-                <span className="self-center text-xs font-normal text-slate-500">
+                <span className="self-center text-xs text-slate-500">
                   custom topic{view.card.submittedBy ? ` by ${view.card.submittedBy}` : ''}
                 </span>
               )}
-              <span className="max-w-[45%] rounded-lg bg-rose-500/15 px-2 py-1 text-right text-rose-300">
-                {view.card.right} ➡
-              </span>
+              <span className="spectrum-chip spectrum-right">{view.card.right} ➡</span>
             </>
           ) : (
-            <span className="mx-auto text-slate-500">
+            <span className="mx-auto text-sm text-slate-500">
               🔒 Spectrum hidden until the Psychic gives their clue
             </span>
           )}

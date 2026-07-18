@@ -21,17 +21,30 @@ const colorOf = (view: RoomView, playerId: string): string => {
 function SpectrumLabels({ card }: { card: SpectrumCard | null }) {
   if (!card) return null;
   return (
-    <div className="mt-1 flex items-start justify-between gap-4 text-sm font-semibold">
-      <span className="max-w-[45%] rounded-lg bg-sky-500/15 px-2 py-1 text-sky-300">⬅ {card.left}</span>
+    <div className="mt-1 flex items-start justify-between gap-4">
+      <span className="spectrum-chip spectrum-left">⬅ {card.left}</span>
       {card.deck === 'custom' && (
-        <span className="self-center text-xs font-normal text-slate-500">
+        <span className="self-center text-xs text-slate-500">
           custom topic{card.submittedBy ? ` by ${card.submittedBy}` : ''}
         </span>
       )}
-      <span className="max-w-[45%] rounded-lg bg-rose-500/15 px-2 py-1 text-right text-rose-300">
-        {card.right} ➡
-      </span>
+      <span className="spectrum-chip spectrum-right">{card.right} ➡</span>
     </div>
+  );
+}
+
+function LockDots({ locked, needed }: { locked: number; needed: number }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 align-middle">
+      {Array.from({ length: needed }, (_, i) => (
+        <span
+          key={i}
+          className={`h-2.5 w-2.5 rounded-full transition-colors ${
+            i < locked ? 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)]' : 'bg-slate-600'
+          }`}
+        />
+      ))}
+    </span>
   );
 }
 
@@ -45,7 +58,7 @@ function Leaderboard({ view }: { view: RoomView }) {
       {rows.map(({ p, score }, i) => (
         <span
           key={p.id}
-          className={`flex items-center gap-1 rounded-xl border border-slate-600 bg-slate-900/50 px-2 py-1 ${
+          className={`flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-2.5 py-1 shadow-sm ${
             p.connected ? '' : 'opacity-40'
           } ${p.id === view.you.id ? 'ring-1 ring-amber-400/70' : ''}`}
         >
@@ -150,8 +163,8 @@ function GuessingPanel({ view, actions }: PV) {
   return (
     <div className="card-panel space-y-3">
       <div className="text-center">
-        <div className="text-2xl font-bold text-amber-300">&ldquo;{view.clue}&rdquo;</div>
-        <div className="text-xs text-slate-400">clue by {author?.name ?? '?'}</div>
+        <div className="clue-text">&ldquo;{view.clue}&rdquo;</div>
+        <div className="clue-sub mt-1">clue by {author?.name ?? '?'}</div>
       </div>
 
       {isAuthor ? (
@@ -169,8 +182,12 @@ function GuessingPanel({ view, actions }: PV) {
             interactive={false}
           />
           <SpectrumLabels card={view.card} />
-          <div className="text-center text-slate-300">
-            🤐 Your dial — watch everyone home in live. {p.lockedCount}/{p.neededCount} locked in…
+          <div className="flex flex-wrap items-center justify-center gap-2 text-slate-300">
+            <span>🤐 Your dial — watch everyone home in live.</span>
+            <LockDots locked={p.lockedCount} needed={p.neededCount} />
+            <span className="text-sm text-slate-400">
+              {p.lockedCount}/{p.neededCount} locked
+            </span>
           </div>
         </>
       ) : (
@@ -190,24 +207,28 @@ function GuessingPanel({ view, actions }: PV) {
           />
           <SpectrumLabels card={view.card} />
           {locked ? (
-            <div className="text-center text-slate-300">
-              🔒 Locked at {p.yourGuess}° — waiting for the rest ({p.lockedCount}/{p.neededCount})
+            <div className="flex flex-wrap items-center justify-center gap-2 text-slate-300">
+              <span>🔒 Locked at {p.yourGuess}° — waiting for the rest</span>
+              <LockDots locked={p.lockedCount} needed={p.neededCount} />
             </div>
           ) : (
-            <div className="space-y-2 text-center">
+            <div className="space-y-3 text-center">
               <div className="flex items-center justify-center gap-2">
                 {[-5, -1, +1, +5].map((n) => (
                   <button
                     key={n}
-                    className="btn btn-ghost px-3"
+                    className="btn btn-ghost h-11 w-11 rounded-full p-0 text-base font-bold"
                     onClick={() => move(clampDial(shown + n))}
                   >
                     {n > 0 ? `+${n}` : n}
                   </button>
                 ))}
-                <span className="w-14 text-sm text-slate-400">{shown}°</span>
+                <span className="w-14 font-mono text-sm font-bold text-amber-300">{shown}°</span>
               </div>
-              <button className="btn btn-primary px-8 text-lg" onClick={() => actions.partyLock(shown)}>
+              <button
+                className="btn btn-primary px-10 py-3 text-lg"
+                onClick={() => actions.partyLock(shown)}
+              >
                 🔒 Lock in {shown}°
               </button>
             </div>
@@ -232,8 +253,8 @@ function RevealPanel({ view, actions }: PV) {
   return (
     <div className="card-panel space-y-3">
       <div className="text-center">
-        <div className="text-2xl font-bold text-amber-300">&ldquo;{res.clue}&rdquo;</div>
-        <div className="text-xs text-slate-400">
+        <div className="clue-text">&ldquo;{res.clue}&rdquo;</div>
+        <div className="clue-sub mt-1">
           by {res.authorName} — the target was at {res.target}°
         </div>
       </div>

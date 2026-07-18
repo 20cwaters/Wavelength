@@ -4,28 +4,131 @@
   html {
     -webkit-tap-highlight-color: transparent;
   }
+  body {
+    font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2 font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2 font-semibold transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn:focus-visible {
+    outline: 2px solid rgb(251 191 36 / 0.7);
+    outline-offset: 2px;
   }
   .btn-primary {
-    @apply bg-amber-500 text-slate-900 hover:bg-amber-400;
+    background: linear-gradient(180deg, #fcd34d, #f59e0b);
+    color: #211303;
+    box-shadow:
+      0 10px 24px -10px rgb(245 158 11 / 0.55),
+      inset 0 1px 0 rgb(255 255 255 / 0.45);
+  }
+  .btn-primary:hover:not(:disabled) {
+    filter: brightness(1.07);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active:not(:disabled) {
+    filter: brightness(0.98);
+    transform: translateY(0);
   }
   .btn-ghost {
-    @apply border border-slate-600 bg-slate-700/60 text-slate-100 hover:bg-slate-600/60;
+    @apply text-slate-100;
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: rgb(255 255 255 / 0.11);
   }
   .input {
-    @apply w-full rounded-xl border border-slate-600 bg-slate-900/70 px-3 py-2 text-slate-100 focus:border-amber-400 focus:outline-none;
+    @apply w-full rounded-xl px-3 py-2 text-slate-100 transition-colors;
+    background: rgb(2 6 23 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .input:focus {
+    outline: none;
+    border-color: rgb(251 191 36 / 0.7);
+    box-shadow: 0 0 0 3px rgb(251 191 36 / 0.15);
   }
   .card-panel {
-    @apply rounded-2xl border border-slate-700 bg-slate-800/70 p-4 backdrop-blur;
+    @apply p-4 sm:p-5;
+    border-radius: 1.4rem;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgb(64 92 138 / 0.28), transparent 55%),
+      linear-gradient(180deg, #1a2336, #141b2b);
+    box-shadow:
+      0 24px 48px -24px rgb(0 0 0 / 0.65),
+      inset 0 1px 0 rgb(255 255 255 / 0.07);
   }
 }
 
 .input::placeholder {
   color: #64748b;
+}
+
+/* Layered app background: deep navy with soft indigo/teal glows. */
+.app-bg {
+  background-color: #0b1120;
+  background-image:
+    radial-gradient(60% 50% at 72% -10%, rgb(80 102 220 / 0.16), transparent),
+    radial-gradient(50% 42% at 8% 108%, rgb(14 165 233 / 0.1), transparent),
+    linear-gradient(180deg, #0b1120 0%, #0d1526 55%, #121a33 100%);
+  background-attachment: fixed;
+}
+
+/* Amber gradient display text (brand + clue). */
+.brand-gradient {
+  background: linear-gradient(180deg, #fef3c7, #f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.clue-text {
+  font-size: clamp(1.6rem, 4.5vw, 2.3rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  background: linear-gradient(180deg, #fef3c7, #fbbf24 75%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 3px 14px rgb(251 191 36 / 0.22));
+}
+.clue-sub {
+  @apply text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500;
+}
+
+/* Spectrum end labels flanking the dial. */
+.spectrum-chip {
+  @apply max-w-[45%] rounded-xl px-3 py-1.5 text-sm font-bold;
+  box-shadow: 0 8px 18px -10px rgb(0 0 0 / 0.6);
+}
+.spectrum-left {
+  background: linear-gradient(135deg, rgb(56 189 248 / 0.28), rgb(56 189 248 / 0.07));
+  border: 1px solid rgb(56 189 248 / 0.35);
+  color: #7dd3fc;
+}
+.spectrum-right {
+  background: linear-gradient(315deg, rgb(251 113 133 / 0.28), rgb(251 113 133 / 0.07));
+  border: 1px solid rgb(251 113 133 / 0.35);
+  color: #fda4af;
+  text-align: right;
+}
+
+/* Target wedges fade in when revealed. */
+.dial-wedges {
+  animation: wedge-in 0.45s ease-out both;
+}
+@keyframes wedge-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes wave-drift {

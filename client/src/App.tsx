@@ -13,7 +13,7 @@ export default function App() {
   const [showTopic, setShowTopic] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 text-slate-100">
+    <div className="app-bg min-h-screen text-slate-100">
       {view === null ? (
         <JoinPage onRules={() => setShowRules(true)} />
       ) : (

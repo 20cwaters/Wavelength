@@ -125,7 +125,7 @@ export default function JoinPage({ onRules }: { onRules: () => void }) {
       <div className="relative mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center gap-8 px-4 py-10 lg:flex-row lg:gap-14">
         <div className="flex w-full max-w-md flex-col items-center text-center">
           <DialArt />
-          <h1 className="mt-4 text-5xl font-black tracking-tight">Wavelength</h1>
+          <h1 className="brand-gradient mt-4 text-5xl font-black tracking-tight">Wavelength</h1>
           <p className="mt-2 text-slate-400">
             Read your team&apos;s mind on a spectrum. Give the clue, find the bullseye.
           </p>
