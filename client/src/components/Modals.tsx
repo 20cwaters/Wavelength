@@ -53,6 +53,8 @@ export function RulesModal({ onClose }: { onClose: () => void }) {
             <li>
               The dials are shuffled, then come up one at a time. Everyone except the clue writer
               drags their <b>own private dial</b> to where they think the clue points and locks in.
+              Guessers can&apos;t see each other&apos;s dials — but the clue writer watches all the
+              needles move live.
             </li>
             <li>
               Reveal! Each guesser scores by how close they landed (4 / 3 / 2 / 0), and the clue

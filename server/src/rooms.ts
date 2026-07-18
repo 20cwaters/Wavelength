@@ -169,6 +169,8 @@ export class Room {
   dials: PartyDial[] = [];
   dialIndex = 0;
   partyGuesses = new Map<string, number>();
+  /** In-progress guess positions for the current dial — shown live to its author only. */
+  partyLive = new Map<string, number>();
   partyScores = new Map<string, number>();
   partyHistory: PartyRoundResult[] = [];
   partyLastResult: PartyRoundResult | null = null;
@@ -328,6 +330,7 @@ export class Room {
     this.dials = [];
     this.dialIndex = 0;
     this.partyGuesses = new Map();
+    this.partyLive = new Map();
     this.partyScores = new Map();
     this.partyHistory = [];
     this.partyLastResult = null;
@@ -404,9 +407,24 @@ export class Room {
 
   private beginPartyDial(): void {
     this.partyGuesses = new Map();
+    this.partyLive = new Map();
     this.partyLastResult = null;
     this.roundNo = this.dialIndex + 1;
     this.phase = 'guessing';
+  }
+
+  /** Record a guesser's in-progress dial position. Returns the author's socket
+   *  id (for a targeted live update) or null when the move is ignored. */
+  partySetLive(playerId: string, value: number): string | null {
+    if (this.settings.mode !== 'party' || this.phase !== 'guessing') return null;
+    const dial = this.currentDial();
+    if (!dial || playerId === dial.authorId) return null;
+    if (this.partyGuesses.has(playerId)) return null; // locked — position is final
+    if (!Number.isFinite(value)) return null;
+    this.partyLive.set(playerId, clampDial(value));
+    this.touch();
+    const author = this.players.find((p) => p.id === dial.authorId);
+    return author?.connected ? author.socketId : null;
   }
 
   partyLock(playerId: string, value: number): void {
@@ -418,7 +436,9 @@ export class Room {
     if (this.partyGuesses.has(playerId)) fail('You already locked in');
     if (!Number.isFinite(value)) fail('Invalid guess');
     this.player(playerId); // validate membership
-    this.partyGuesses.set(playerId, clampDial(value));
+    const clamped = clampDial(value);
+    this.partyGuesses.set(playerId, clamped);
+    this.partyLive.set(playerId, clamped); // author's live view shows the final position
     this.checkPartyComplete();
   }
 
@@ -751,6 +771,9 @@ export class Room {
           yourGuess: this.partyGuesses.get(me.id) ?? null,
           lockedCount: this.partyGuesses.size,
           neededCount: this.connectedPartyGuessers(dial.authorId).length,
+          liveGuesses:
+            isAuthor && this.phase === 'guessing' ? Object.fromEntries(this.partyLive) : null,
+          lockedIds: isAuthor ? [...this.partyGuesses.keys()] : null,
         },
         partyLastResult:
           this.phase === 'reveal' || this.phase === 'gameover' ? this.partyLastResult : null,

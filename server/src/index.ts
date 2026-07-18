@@ -111,6 +111,22 @@ io.on('connection', (socket: GameSocket) => {
     }
   });
 
+  // Party mode fast path: stream a guesser's in-progress position to the
+  // current dial's author only (other guessers never see it).
+  socket.on('party:pointer', (p) => {
+    try {
+      const { room, player } = manager.ctx(socket.id);
+      const authorSocketId = room.partySetLive(player.id, Number(p?.value));
+      if (authorSocketId) {
+        io.sockets.sockets
+          .get(authorSocketId)
+          ?.emit('partyLive', Object.fromEntries(room.partyLive));
+      }
+    } catch {
+      // Ignore — stale clients can't hurt anything here.
+    }
+  });
+
   // Fast path for live dial movement: light broadcast, no full state rebuild.
   socket.on('pointer:set', (p) => {
     try {

@@ -93,6 +93,10 @@ export interface PartyRoundView {
   yourGuess: number | null;
   lockedCount: number;
   neededCount: number;
+  /** Live in-progress guess positions (playerId -> value). Author-only; null for everyone else. */
+  liveGuesses: Record<string, number> | null;
+  /** Which players have locked in. Author-only; null for everyone else. */
+  lockedIds: string[] | null;
 }
 
 export interface PartyGuessResult {
@@ -177,6 +181,7 @@ export interface ClientToServerEvents {
   'guess:lock': (ack: (r: AckRes) => void) => void;
   'bonus:vote': (p: { side: Side }, ack: (r: AckRes) => void) => void;
   'author:clue': (p: { clue: string }, ack: (r: AckRes) => void) => void;
+  'party:pointer': (p: { value: number }) => void;
   'party:lock': (p: { value: number }, ack: (r: AckRes) => void) => void;
   'round:next': (ack: (r: AckRes) => void) => void;
   'round:skip': (ack: (r: AckRes) => void) => void;
@@ -186,4 +191,6 @@ export interface ClientToServerEvents {
 export interface ServerToClientEvents {
   state: (view: RoomView) => void;
   pointer: (value: number) => void;
+  /** Party mode: live guess positions, streamed to the current dial's author only. */
+  partyLive: (guesses: Record<string, number>) => void;
 }

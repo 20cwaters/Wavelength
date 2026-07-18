@@ -57,6 +57,7 @@ export interface GameActions {
   submitClue(clue: string): void;
   authorClue(clue: string): void;
   partyLock(value: number): void;
+  partyMovePointer(v: number): void;
   movePointer(v: number): void;
   commitPointer(v: number): void;
   lockGuess(): void;
@@ -98,6 +99,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const onState = (v: RoomView) => setView(v);
     const onPointer = (value: number) =>
       setView((prev) => (prev && !prev.locked ? { ...prev, pointer: value } : prev));
+    const onPartyLive = (guesses: Record<string, number>) =>
+      setView((prev) =>
+        prev && prev.party ? { ...prev, party: { ...prev.party, liveGuesses: guesses } } : prev,
+      );
     const onConnect = () => {
       setConnected(true);
       const s = loadSession();
@@ -118,12 +123,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     socket.on('state', onState);
     socket.on('pointer', onPointer);
+    socket.on('partyLive', onPartyLive);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     if (socket.connected) onConnect();
     return () => {
       socket.off('state', onState);
       socket.off('pointer', onPointer);
+      socket.off('partyLive', onPartyLive);
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
     };
@@ -215,6 +222,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
     [flushPointer],
   );
 
+  // Party mode: stream a guesser's private dial position to the clue author.
+  const pendingLive = useRef<number | null>(null);
+  const liveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const partyMovePointer = useCallback((v: number) => {
+    pendingLive.current = v;
+    if (!liveTimer.current) {
+      liveTimer.current = setTimeout(() => {
+        liveTimer.current = null;
+        if (pendingLive.current !== null) {
+          socket.emit('party:pointer', { value: pendingLive.current });
+          pendingLive.current = null;
+        }
+      }, 80);
+    }
+  }, []);
+
   const addTopic = useCallback(
     (left: string, right: string) =>
       new Promise<boolean>((resolve) => {
@@ -233,6 +257,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     addTopic,
     movePointer,
     commitPointer,
+    partyMovePointer,
     setTeam: useCallback((team: Team) => socket.emit('team:set', { team }, ackToast), [ackToast]),
     setSettings: useCallback((s: Partial<GameSettings>) => socket.emit('settings:set', s, ackToast), [ackToast]),
     setTutorial: useCallback((on: boolean) => socket.emit('tutorial:set', { tutorial: on }, ackToast), [ackToast]),

@@ -135,6 +135,18 @@ function GuessingPanel({ view, actions }: PV) {
   const shown = locked ? p.yourGuess! : val;
   const author = view.players.find((pl) => pl.id === p.authorId);
 
+  const move = (v: number) => {
+    setVal(v);
+    actions.partyMovePointer(v);
+  };
+
+  const nameOf = (pid: string) => view.players.find((pl) => pl.id === pid)?.name ?? '?';
+  const liveMarkers = Object.entries(p.liveGuesses ?? {}).map(([pid, v]) => ({
+    value: v,
+    label: `${nameOf(pid).slice(0, 8)}${p.lockedIds?.includes(pid) ? ' 🔒' : ''}`,
+    color: colorOf(view, pid),
+  }));
+
   return (
     <div className="card-panel space-y-3">
       <div className="text-center">
@@ -144,11 +156,21 @@ function GuessingPanel({ view, actions }: PV) {
 
       {isAuthor ? (
         <>
-          <Dial value={90} showPointer={false} target={view.target} interactive={false} />
+          <Tip id="party-author-watch">
+            Only you can see this: every needle is a player&apos;s live guess, updating as they
+            drag. A 🔒 means they&apos;ve locked in. No peeking rules needed — they can&apos;t see
+            each other!
+          </Tip>
+          <Dial
+            value={90}
+            showPointer={false}
+            target={view.target}
+            markers={liveMarkers}
+            interactive={false}
+          />
           <SpectrumLabels card={view.card} />
           <div className="text-center text-slate-300">
-            🤐 This is your dial — sit back and watch. {p.lockedCount}/{p.neededCount} guesses locked
-            in…
+            🤐 Your dial — watch everyone home in live. {p.lockedCount}/{p.neededCount} locked in…
           </div>
         </>
       ) : (
@@ -163,8 +185,8 @@ function GuessingPanel({ view, actions }: PV) {
             target={null}
             interactive={!locked}
             locked={locked}
-            onChange={setVal}
-            onCommit={setVal}
+            onChange={move}
+            onCommit={move}
           />
           <SpectrumLabels card={view.card} />
           {locked ? (
@@ -178,7 +200,7 @@ function GuessingPanel({ view, actions }: PV) {
                   <button
                     key={n}
                     className="btn btn-ghost px-3"
-                    onClick={() => setVal(clampDial(shown + n))}
+                    onClick={() => move(clampDial(shown + n))}
                   >
                     {n > 0 ? `+${n}` : n}
                   </button>
