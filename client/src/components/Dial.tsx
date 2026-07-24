@@ -99,7 +99,7 @@ export default function Dial({
   ]
     .map((p) => p.join(','))
     .join(' ');
-  const hubColor = locked ? '#e11d48' : '#f59e0b';
+  const hubColor = locked ? '#c43a1c' : '#e5a62e';
 
   return (
     <svg
@@ -116,50 +116,52 @@ export default function Dial({
       onPointerCancel={onPointerUp}
     >
       <defs>
+        {/* Cream board face, like the physical game. */}
         <radialGradient id="dialFace" gradientUnits="userSpaceOnUse" cx={CX} cy={CY} r={R}>
-          <stop offset="0%" stopColor="#2a3650" />
-          <stop offset="55%" stopColor="#1d2639" />
-          <stop offset="100%" stopColor="#151c2c" />
+          <stop offset="0%" stopColor="#f7eed6" />
+          <stop offset="60%" stopColor="#efe2bd" />
+          <stop offset="100%" stopColor="#e2d0a1" />
         </radialGradient>
         <linearGradient id="rimGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#5b6b84" />
-          <stop offset="100%" stopColor="#2c3648" />
+          <stop offset="0%" stopColor="#4a3a24" />
+          <stop offset="100%" stopColor="#221809" />
         </linearGradient>
         <linearGradient id="needleGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={locked ? '#fecdd3' : '#fde68a'} />
-          <stop offset="100%" stopColor={locked ? '#e11d48' : '#f59e0b'} />
+          <stop offset="0%" stopColor={locked ? '#e0563a' : '#4a3826'} />
+          <stop offset="100%" stopColor={locked ? '#8e2517' : '#1d140b'} />
         </linearGradient>
+        {/* Wedges in the box palette: burnt orange, mustard, sky blue. */}
         <radialGradient id="wedge4" gradientUnits="userSpaceOnUse" cx={CX} cy={CY} r={R}>
-          <stop offset="25%" stopColor="#92400e" />
-          <stop offset="100%" stopColor="#fbbf24" />
+          <stop offset="25%" stopColor="#c2451d" />
+          <stop offset="100%" stopColor="#ee7a42" />
         </radialGradient>
         <radialGradient id="wedge3" gradientUnits="userSpaceOnUse" cx={CX} cy={CY} r={R}>
-          <stop offset="25%" stopColor="#115e59" />
-          <stop offset="100%" stopColor="#2dd4bf" />
+          <stop offset="25%" stopColor="#b47a15" />
+          <stop offset="100%" stopColor="#eeb445" />
         </radialGradient>
         <radialGradient id="wedge2" gradientUnits="userSpaceOnUse" cx={CX} cy={CY} r={R}>
-          <stop offset="25%" stopColor="#1e40af" />
-          <stop offset="100%" stopColor="#60a5fa" />
+          <stop offset="25%" stopColor="#20789f" />
+          <stop offset="100%" stopColor="#57c1e8" />
         </radialGradient>
         <filter id="needleShadow" x="-40%" y="-40%" width="180%" height="180%">
-          <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#000000" floodOpacity="0.5" />
+          <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#3a2712" floodOpacity="0.5" />
         </filter>
         <filter id="markerShadow" x="-40%" y="-40%" width="180%" height="180%">
-          <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#000000" floodOpacity="0.45" />
+          <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#3a2712" floodOpacity="0.4" />
         </filter>
       </defs>
 
       {/* face */}
       <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY} Z`} fill="url(#dialFace)" />
 
-      {/* faint machined arcs */}
+      {/* faint printed arcs */}
       {[130, 200, 268].map((r) => (
         <path
           key={r}
           d={`M ${CX - r} ${CY} A ${r} ${r} 0 0 1 ${CX + r} ${CY}`}
           fill="none"
-          stroke="#ffffff"
-          strokeOpacity={0.04}
+          stroke="#3a2c1a"
+          strokeOpacity={0.08}
           strokeWidth={1.5}
         />
       ))}
@@ -176,9 +178,9 @@ export default function Dial({
             y1={y1}
             x2={x2}
             y2={y2}
-            stroke={major ? '#64748b' : '#475569'}
+            stroke={major ? '#6b563a' : '#8a7351'}
             strokeWidth={major ? 2.5 : 1.4}
-            strokeOpacity={major ? 0.9 : 0.55}
+            strokeOpacity={major ? 0.85 : 0.5}
             strokeLinecap="round"
           />
         );
@@ -187,13 +189,13 @@ export default function Dial({
       {/* target scoring wedges */}
       {wedges && (
         <g className="dial-wedges">
-          <path d={sectorPath(CX, CY, wedges[0].from, wedges[4].to, 46, R - 2)} fill="#ffffff" opacity={0.05} />
+          <path d={sectorPath(CX, CY, wedges[0].from, wedges[4].to, 46, R - 2)} fill="#241a10" opacity={0.06} />
           {wedges.map((w, i) => (
             <path
               key={i}
               d={sectorPath(CX, CY, w.from, w.to, 50, R - 6)}
               fill={WEDGE_FILL[w.points]}
-              stroke="#0b1220"
+              stroke="#241a10"
               strokeWidth={1.5}
               strokeLinejoin="round"
             />
@@ -209,8 +211,8 @@ export default function Dial({
                 dominantBaseline="middle"
                 fontSize={25}
                 fontWeight={800}
-                fill="#0b1220"
-                opacity={0.85}
+                fill="#241a10"
+                opacity={0.82}
               >
                 {w.points}
               </text>
@@ -229,7 +231,7 @@ export default function Dial({
       <path
         d={`M ${CX - (R + 11)} ${CY} A ${R + 11} ${R + 11} 0 0 1 ${CX + (R + 11)} ${CY}`}
         fill="none"
-        stroke="#0b1220"
+        stroke="#0f0a05"
         strokeWidth={2.5}
         strokeOpacity={0.8}
       />
@@ -257,15 +259,15 @@ export default function Dial({
               opacity={0.95}
               filter="url(#markerShadow)"
             />
-            <circle cx={dotx} cy={doty} r={7} fill={m.color} stroke="#0b1220" strokeWidth={2} />
+            <circle cx={dotx} cy={doty} r={7} fill={m.color} stroke="#241a10" strokeWidth={2} />
             <rect
               x={lx - pillW / 2}
               y={ly - 12}
               width={pillW}
               height={24}
               rx={12}
-              fill="#0b1220"
-              opacity={0.92}
+              fill="#241a10"
+              opacity={0.94}
               stroke={m.color}
               strokeWidth={1.5}
             />
@@ -299,9 +301,9 @@ export default function Dial({
       {showPointer && (
         <g filter="url(#needleShadow)">
           <polygon points={needlePoints} fill="url(#needleGrad)" />
-          <circle cx={CX} cy={CY} r={21} fill="#0d1523" stroke="url(#rimGrad)" strokeWidth={3.5} />
+          <circle cx={CX} cy={CY} r={21} fill="#241a10" stroke="#0f0a05" strokeWidth={3} />
           <circle cx={CX} cy={CY} r={8} fill={hubColor} />
-          <circle cx={CX - 3} cy={CY - 3} r={2.4} fill="#ffffff" opacity={0.5} />
+          <circle cx={CX - 3} cy={CY - 3} r={2.4} fill="#fff6e0" opacity={0.45} />
         </g>
       )}
     </svg>

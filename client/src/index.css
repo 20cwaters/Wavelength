@@ -1,11 +1,45 @@
 @import 'tailwindcss';
 
+/* Retro board-game-box palette: warm speckled black, cream, burnt orange,
+ * mustard, avocado, sage green, and sky blue. The stock Tailwind hues used
+ * throughout the components are remapped here so the whole app shifts theme. */
+@theme {
+  --color-slate-950: #120d07;
+  --color-slate-900: #1c150d;
+  --color-slate-800: #271e13;
+  --color-slate-700: #3c2f1e;
+  --color-slate-600: #57462c;
+  --color-slate-500: #8a7351;
+  --color-slate-400: #b39c76;
+  --color-slate-300: #d9c7a0;
+  --color-slate-200: #e9dcbb;
+  --color-slate-100: #f4ecd6;
+
+  --color-amber-100: #fdf3d9;
+  --color-amber-200: #f7ddaa;
+  --color-amber-300: #eec06a;
+  --color-amber-400: #e5a62e;
+  --color-amber-500: #dd8c20;
+
+  --color-sky-300: #8fd4ee;
+  --color-sky-400: #45b5e0;
+  --color-sky-500: #2b9cc9;
+
+  --color-rose-300: #f0a184;
+  --color-rose-400: #e8613c;
+  --color-rose-500: #cf4c2a;
+  --color-rose-600: #b23a1e;
+
+  --color-emerald-400: #8faf3e;
+  --color-teal-400: #5bbf9e;
+}
+
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Jost', ui-sans-serif, system-ui, sans-serif;
   }
 }
 
@@ -14,15 +48,15 @@
     @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2 font-semibold transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40;
   }
   .btn:focus-visible {
-    outline: 2px solid rgb(251 191 36 / 0.7);
+    outline: 2px solid rgb(232 129 60 / 0.75);
     outline-offset: 2px;
   }
   .btn-primary {
-    background: linear-gradient(180deg, #fcd34d, #f59e0b);
-    color: #211303;
+    background: linear-gradient(180deg, #f08a4b, #d95f22);
+    color: #1d1206;
     box-shadow:
-      0 10px 24px -10px rgb(245 158 11 / 0.55),
-      inset 0 1px 0 rgb(255 255 255 / 0.45);
+      0 10px 24px -10px rgb(217 95 34 / 0.55),
+      inset 0 1px 0 rgb(255 235 210 / 0.4);
   }
   .btn-primary:hover:not(:disabled) {
     filter: brightness(1.07);
@@ -34,53 +68,54 @@
   }
   .btn-ghost {
     @apply text-slate-100;
-    background: rgb(255 255 255 / 0.06);
-    border: 1px solid rgb(255 255 255 / 0.12);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+    background: rgb(255 240 210 / 0.06);
+    border: 1px solid rgb(255 240 210 / 0.14);
+    box-shadow: inset 0 1px 0 rgb(255 240 210 / 0.06);
   }
   .btn-ghost:hover:not(:disabled) {
-    background: rgb(255 255 255 / 0.11);
+    background: rgb(255 240 210 / 0.12);
   }
   .input {
     @apply w-full rounded-xl px-3 py-2 text-slate-100 transition-colors;
-    background: rgb(2 6 23 / 0.55);
-    border: 1px solid rgb(255 255 255 / 0.12);
+    background: rgb(15 10 5 / 0.55);
+    border: 1px solid rgb(255 240 210 / 0.14);
   }
   .input:focus {
     outline: none;
-    border-color: rgb(251 191 36 / 0.7);
-    box-shadow: 0 0 0 3px rgb(251 191 36 / 0.15);
+    border-color: rgb(240 138 75 / 0.75);
+    box-shadow: 0 0 0 3px rgb(240 138 75 / 0.16);
   }
   .card-panel {
     @apply p-4 sm:p-5;
     border-radius: 1.4rem;
-    border: 1px solid rgb(255 255 255 / 0.08);
+    border: 1px solid rgb(244 232 208 / 0.1);
     background:
-      radial-gradient(120% 90% at 50% 0%, rgb(64 92 138 / 0.28), transparent 55%),
-      linear-gradient(180deg, #1a2336, #141b2b);
+      radial-gradient(120% 90% at 50% 0%, rgb(122 92 54 / 0.2), transparent 55%),
+      linear-gradient(180deg, #251c12, #1c150d);
     box-shadow:
       0 24px 48px -24px rgb(0 0 0 / 0.65),
-      inset 0 1px 0 rgb(255 255 255 / 0.07);
+      inset 0 1px 0 rgb(255 245 220 / 0.06);
   }
 }
 
 .input::placeholder {
-  color: #64748b;
+  color: #8a7351;
 }
 
-/* Layered app background: deep navy with soft indigo/teal glows. */
+/* Speckled warm-black background — like the starry black bands on the box. */
 .app-bg {
-  background-color: #0b1120;
+  background-color: #17110b;
   background-image:
-    radial-gradient(60% 50% at 72% -10%, rgb(80 102 220 / 0.16), transparent),
-    radial-gradient(50% 42% at 8% 108%, rgb(14 165 233 / 0.1), transparent),
-    linear-gradient(180deg, #0b1120 0%, #0d1526 55%, #121a33 100%);
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cg fill='%23fff6e0' fill-opacity='0.11'%3E%3Ccircle cx='12' cy='34' r='1.1'/%3E%3Ccircle cx='45' cy='120' r='0.9'/%3E%3Ccircle cx='78' cy='20' r='1.3'/%3E%3Ccircle cx='103' cy='86' r='0.8'/%3E%3Ccircle cx='140' cy='45' r='1.2'/%3E%3Ccircle cx='180' cy='110' r='0.9'/%3E%3Ccircle cx='205' cy='30' r='1.1'/%3E%3Ccircle cx='28' cy='180' r='1.2'/%3E%3Ccircle cx='65' cy='210' r='0.8'/%3E%3Ccircle cx='95' cy='160' r='1.0'/%3E%3Ccircle cx='130' cy='200' r='1.3'/%3E%3Ccircle cx='170' cy='175' r='0.9'/%3E%3Ccircle cx='200' cy='150' r='1.1'/%3E%3Ccircle cx='15' cy='90' r='0.9'/%3E%3Ccircle cx='55' cy='60' r='1.0'/%3E%3Ccircle cx='150' cy='130' r='0.8'/%3E%3Ccircle cx='190' cy='70' r='1.2'/%3E%3Ccircle cx='110' cy='15' r='0.9'/%3E%3Ccircle cx='35' cy='150' r='0.8'/%3E%3Ccircle cx='85' cy='115' r='1.1'/%3E%3Ccircle cx='125' cy='90' r='0.9'/%3E%3Ccircle cx='160' cy='15' r='1.0'/%3E%3Ccircle cx='210' cy='200' r='0.9'/%3E%3Ccircle cx='70' cy='140' r='1.2'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(55% 45% at 75% -8%, rgb(232 97 60 / 0.12), transparent),
+    radial-gradient(45% 40% at 5% 108%, rgb(69 181 224 / 0.09), transparent),
+    linear-gradient(180deg, #16100a, #1a130c 60%, #1d1409 100%);
   background-attachment: fixed;
 }
 
-/* Amber gradient display text (brand + clue). */
+/* Cream display text — the box title is spaced white caps. */
 .brand-gradient {
-  background: linear-gradient(180deg, #fef3c7, #f59e0b);
+  background: linear-gradient(180deg, #fffdf4, #e9d9ae);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -88,14 +123,14 @@
 
 .clue-text {
   font-size: clamp(1.6rem, 4.5vw, 2.3rem);
-  font-weight: 900;
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  letter-spacing: 0.02em;
   line-height: 1.15;
-  background: linear-gradient(180deg, #fef3c7, #fbbf24 75%);
+  background: linear-gradient(180deg, #fdf4dc, #f0a184 85%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 3px 14px rgb(251 191 36 / 0.22));
+  filter: drop-shadow(0 3px 14px rgb(232 97 60 / 0.22));
 }
 .clue-sub {
   @apply text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500;
@@ -107,14 +142,14 @@
   box-shadow: 0 8px 18px -10px rgb(0 0 0 / 0.6);
 }
 .spectrum-left {
-  background: linear-gradient(135deg, rgb(56 189 248 / 0.28), rgb(56 189 248 / 0.07));
-  border: 1px solid rgb(56 189 248 / 0.35);
-  color: #7dd3fc;
+  background: linear-gradient(135deg, rgb(69 181 224 / 0.26), rgb(69 181 224 / 0.07));
+  border: 1px solid rgb(69 181 224 / 0.4);
+  color: #8fd4ee;
 }
 .spectrum-right {
-  background: linear-gradient(315deg, rgb(251 113 133 / 0.28), rgb(251 113 133 / 0.07));
-  border: 1px solid rgb(251 113 133 / 0.35);
-  color: #fda4af;
+  background: linear-gradient(315deg, rgb(232 97 60 / 0.26), rgb(232 97 60 / 0.07));
+  border: 1px solid rgb(232 97 60 / 0.4);
+  color: #f0a184;
   text-align: right;
 }
 
@@ -129,19 +164,4 @@
   to {
     opacity: 1;
   }
-}
-
-@keyframes wave-drift {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.animate-wave-slow {
-  animation: wave-drift 22s linear infinite;
-}
-.animate-wave-fast {
-  animation: wave-drift 12s linear infinite;
 }

@@ -32,8 +32,8 @@ export default function RoomHeader({ onRules, onTopic }: { onRules: () => void; 
   return (
     <header className="flex flex-wrap items-center justify-between gap-2 py-3">
       <div className="flex items-center gap-3">
-        <span className="text-xl font-black tracking-tight">
-          📡 <span className="brand-gradient">Wavelength</span>
+        <span className="text-lg font-bold">
+          📡 <span className="brand-gradient uppercase tracking-[0.22em]">Wavelength</span>
         </span>
         <button className="btn btn-ghost px-3 py-1 font-mono text-sm" onClick={copy} title="Copy invite link">
           {view.code} {copied ? '✅' : '🔗'}
