@@ -116,6 +116,19 @@ describe('randomTarget / clampDial', () => {
     expect(clampDial(90.4)).toBe(90);
     expect(clampDial(90.6)).toBe(91);
   });
+
+  it('allows targets at the very edge of the dial', () => {
+    expect(TARGET_MIN).toBe(DIAL_MIN);
+    expect(TARGET_MAX).toBe(DIAL_MAX);
+    // A dial pinned to the edge scores the bullseye on an edge target.
+    expect(scoreGuess(DIAL_MIN, DIAL_MIN)).toBe(4);
+    expect(scoreGuess(DIAL_MAX, DIAL_MAX)).toBe(4);
+    expect(scoreGuess(DIAL_MAX, DIAL_MAX - Math.floor(H))).toBe(4);
+    // The wedge zone may extend past the board — rendering clips it.
+    const ranges = wedgeRanges(DIAL_MIN);
+    expect(ranges[0].from).toBeLessThan(0);
+    expect(ranges[2].from).toBeLessThanOrEqual(DIAL_MIN);
+  });
 });
 
 describe('pickPsychic', () => {

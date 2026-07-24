@@ -15,23 +15,26 @@ import SettingsForm from './SettingsForm';
 const BAND_COLORS = ['#e8613c', '#f0a184', '#e9dcb8', '#8faf3e', '#3d7a3f', '#45b5e0', '#2a2019'];
 const WEDGE_COLORS: Record<number, string> = { 4: '#e8613c', 3: '#e5a62e', 2: '#45b5e0' };
 
-/** Radiating concentric bands rising from the bottom — the box's signature motif. */
+/** Radiating concentric bands rising from the bottom — the box's signature
+ *  motif. The viewBox is tall enough to contain every ring (no hard clipping)
+ *  and the rings fade as they radiate outward. */
 function RetroBands() {
   return (
     <div
       className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center overflow-hidden"
       aria-hidden
     >
-      <svg viewBox="0 0 1400 430" className="w-[1400px] max-w-none opacity-35" preserveAspectRatio="xMidYMax meet">
+      <svg viewBox="0 0 1400 620" className="w-[1400px] max-w-none" preserveAspectRatio="xMidYMax meet">
         {Array.from({ length: 13 }, (_, i) => {
           const r = 140 + i * 36;
           return (
             <path
               key={i}
-              d={`M ${700 - r} 430 A ${r} ${r} 0 0 1 ${700 + r} 430`}
+              d={`M ${700 - r} 620 A ${r} ${r} 0 0 1 ${700 + r} 620`}
               fill="none"
               stroke={BAND_COLORS[i % BAND_COLORS.length]}
               strokeWidth={30}
+              strokeOpacity={0.38 - i * 0.022}
             />
           );
         })}

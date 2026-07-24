@@ -9,10 +9,11 @@ export const DIAL_MAX = 180;
  *  2 | 3 | 4 | 3 | 2  (bullseye in the middle). */
 export const WEDGE_WIDTH = 7;
 
-/** Targets are kept far enough from the edges that the full wedge zone fits on the dial. */
-export const TARGET_MARGIN = Math.ceil(WEDGE_WIDTH * 2.5) + 1;
-export const TARGET_MIN = DIAL_MIN + TARGET_MARGIN;
-export const TARGET_MAX = DIAL_MAX - TARGET_MARGIN;
+/** Targets can land anywhere on the dial — right up to the edges. When the
+ *  target sits near an edge, the outer wedges simply run off the board, and a
+ *  bullseye may require pinning the dial all the way to one side. */
+export const TARGET_MIN = DIAL_MIN;
+export const TARGET_MAX = DIAL_MAX;
 
 export const DEFAULT_TARGET_SCORE = 10;
 export const MIN_TARGET_SCORE = 3;

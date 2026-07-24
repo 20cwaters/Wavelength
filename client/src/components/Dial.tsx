@@ -79,7 +79,14 @@ export default function Dial({
     onCommit?.(v ?? value);
   };
 
-  const wedges = target !== null ? wedgeRanges(target) : null;
+  // Wedge zones can run past the board edges when the target sits near 1 or
+  // 180 — clip them to the visible arc and drop fully off-board wedges.
+  const wedges =
+    target !== null
+      ? wedgeRanges(target)
+          .map((w) => ({ points: w.points, from: Math.max(0, w.from), to: Math.min(180, w.to) }))
+          .filter((w) => w.to - w.from > 0.1)
+      : null;
 
   // Tapered needle polygon: wide at the hub, near-point at the tip.
   const rad = ((180 - value) * Math.PI) / 180;
@@ -187,9 +194,13 @@ export default function Dial({
       })}
 
       {/* target scoring wedges */}
-      {wedges && (
+      {wedges && wedges.length > 0 && (
         <g className="dial-wedges">
-          <path d={sectorPath(CX, CY, wedges[0].from, wedges[4].to, 46, R - 2)} fill="#241a10" opacity={0.06} />
+          <path
+            d={sectorPath(CX, CY, wedges[0].from, wedges[wedges.length - 1].to, 46, R - 2)}
+            fill="#241a10"
+            opacity={0.06}
+          />
           {wedges.map((w, i) => (
             <path
               key={i}
@@ -201,6 +212,7 @@ export default function Dial({
             />
           ))}
           {wedges.map((w, i) => {
+            if (w.to - w.from < 4) return null; // too thin a sliver to fit a number
             const [lx, ly] = polar(CX, CY, R - 42, (w.from + w.to) / 2);
             return (
               <text
